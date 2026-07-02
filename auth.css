@@ -1,0 +1,101 @@
+/* ==========================================================================
+   auth.css — Login, Register, and Password Reset page styling.
+   ========================================================================== */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--clr-primary-dark), var(--clr-primary));
+  padding: 20px;
+}
+
+.auth-card {
+  background: var(--clr-panel);
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  padding: 40px 36px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.auth-brand .logo-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--clr-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-brand h1 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.auth-card > .subtitle {
+  text-align: center;
+  color: var(--clr-text-muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.auth-footer-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--clr-text-muted);
+}
+
+.auth-footer-link a {
+  font-weight: 600;
+}
+
+.password-input-wrap {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--clr-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  color: var(--clr-text-muted);
+  font-size: 12px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--clr-border);
+}
+
+.forgot-link {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 18px;
+}

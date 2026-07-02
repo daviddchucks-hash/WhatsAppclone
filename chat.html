@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ChatApp</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/chat.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<div class="app-shell" id="app-shell">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img id="my-avatar" class="avatar avatar-sm" src="" alt="me" style="cursor:pointer" />
+      <div class="actions">
+        <button class="btn-icon" id="new-group-btn" title="New group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn-icon" id="settings-btn" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="search-input" placeholder="Search or start a new chat" />
+      </div>
+    </div>
+
+    <div id="search-results" class="search-results-list" style="display:none;"></div>
+    <div class="chat-list" id="chat-list"></div>
+  </aside>
+
+  <!-- ============================== CHAT WINDOW ============================== -->
+  <main class="chat-window" id="chat-window">
+    <div class="empty-state" id="no-chat-selected">
+      <svg width="90" height="90" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.5"/></svg>
+      <h3>ChatApp</h3>
+      <p>Select a chat to start messaging, or search for a contact to begin a new conversation.</p>
+    </div>
+
+    <div id="active-chat" style="display:none; flex-direction:column; height:100%;">
+      <div class="chat-header" id="chat-header-clickable">
+        <button class="btn-icon back-btn" id="back-to-list">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="avatar-wrap">
+          <img id="header-avatar" class="avatar avatar-md" src="" alt="" />
+          <span class="online-dot" id="header-online-dot"></span>
+        </div>
+        <div class="header-info">
+          <div class="header-name" id="header-name"></div>
+          <div class="header-status" id="header-status"></div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="header-search-btn" title="Search in chat">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="messages-container" id="messages-container"></div>
+
+      <div class="reply-bar" id="reply-bar">
+        <div class="reply-content">
+          <span class="reply-sender" id="reply-bar-sender"></span>
+          <span id="reply-bar-text"></span>
+        </div>
+        <button class="btn-icon" id="cancel-reply">✕</button>
+      </div>
+
+      <form class="composer" id="composer-form" autocomplete="off">
+        <div class="attach-menu">
+          <button type="button" class="btn-icon" id="attach-btn" title="Attach">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3.5 3.5 0 014.95 4.95l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="attach-options" id="attach-options">
+            <button type="button" data-accept="image/*" data-type="image">🖼️ Photo</button>
+            <button type="button" data-accept="video/*" data-type="video">🎥 Video</button>
+            <button type="button" data-accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" data-type="document">📄 Document</button>
+          </div>
+          <input type="file" id="file-input" hidden />
+        </div>
+
+        <button type="button" class="btn-icon" id="emoji-btn" title="Emoji">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="emoji-picker" id="emoji-picker"></div>
+
+        <textarea id="message-input" placeholder="Type a message" rows="1"></textarea>
+
+        <div class="recording-indicator" id="recording-indicator">
+          <span class="rec-dot"></span>
+          <span id="recording-time">0:00</span>
+          <span>Recording voice note...</span>
+        </div>
+
+        <button type="button" class="btn-icon" id="mic-btn" title="Record voice note">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" stroke="currentColor" stroke-width="2"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button type="submit" class="btn-icon" id="send-btn" title="Send" style="background:var(--clr-primary); color:#fff;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- ============================== INFO PANEL ============================== -->
+    <aside class="info-panel" id="info-panel">
+      <div class="info-panel-header">
+        <button class="btn-icon" id="close-info-panel">✕</button>
+        <h3 id="info-panel-title">Contact info</h3>
+      </div>
+      <div class="info-panel-body" id="info-panel-body"></div>
+    </aside>
+  </main>
+</div>
+
+<!-- ============================== NEW GROUP MODAL ============================== -->
+<div class="modal-overlay" id="new-group-modal">
+  <div class="modal slide-up">
+    <div class="modal-header">
+      <h3>New Group</h3>
+      <button class="btn-icon" id="close-new-group">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="group-name-input">Group Name</label>
+        <input type="text" id="group-name-input" placeholder="e.g. Weekend Trip" />
+      </div>
+      <div class="form-group">
+        <label for="group-member-search">Add Members</label>
+        <input type="text" id="group-member-search" placeholder="Search by name or username" />
+      </div>
+      <div id="group-selected-members" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;"></div>
+      <div id="group-member-results" style="max-height: 220px; overflow-y:auto;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancel-new-group">Cancel</button>
+      <button class="btn btn-primary" id="create-group-btn">Create Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== ADD MEMBERS MODAL ============================== -->
+<div class="modal-overlay" id="add-members-modal">
+  <div class="modal slide-up">
+    <div class="modal-header">
+      <h3>Add Members</h3>
+      <button class="btn-icon" id="close-add-members">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <input type="text" id="add-member-search" placeholder="Search by name or username" />
+      </div>
+      <div id="add-member-selected" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;"></div>
+      <div id="add-member-results" style="max-height: 220px; overflow-y:auto;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancel-add-members">Cancel</button>
+      <button class="btn btn-primary" id="confirm-add-members">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== LIGHTBOX ============================== -->
+<div class="lightbox" id="lightbox">
+  <button class="close-lightbox" id="close-lightbox">✕</button>
+  <div id="lightbox-content"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

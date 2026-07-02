@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Profile · ChatApp</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/chat.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+<style>
+  .profile-page { max-width: 520px; margin: 0 auto; min-height: 100vh; background: var(--clr-panel); }
+  .profile-header { display:flex; align-items:center; gap:16px; padding:16px 20px; background:var(--clr-panel-alt); border-bottom:1px solid var(--clr-border); }
+  .profile-avatar-section { display:flex; flex-direction:column; align-items:center; padding:36px 20px; }
+  .avatar-upload-wrap { position:relative; cursor:pointer; }
+  .avatar-upload-wrap .overlay { position:absolute; inset:0; border-radius:50%; background:rgba(0,0,0,.4); color:#fff;
+    display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-size:12px; text-align:center; }
+  .avatar-upload-wrap:hover .overlay { opacity:1; }
+  .profile-field { padding: 16px 24px; border-bottom: 1px solid var(--clr-border); }
+  .profile-field label { display:block; font-size:12.5px; color:var(--clr-primary-dark); font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px; }
+  .profile-field .value-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .profile-field input, .profile-field textarea { border:none; background:transparent; font-size:15.5px; width:100%; padding:4px 0; }
+  .profile-field textarea { resize:none; }
+  .edit-toggle { color: var(--clr-text-muted); flex-shrink:0; }
+  .profile-field .hint { font-size:12px; color:var(--clr-text-muted); margin-top:6px; }
+</style>
+</head>
+<body>
+
+<div class="profile-page">
+  <div class="profile-header">
+    <button class="btn-icon" id="back-btn" title="Back to chats">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <h2>Profile</h2>
+  </div>
+
+  <div class="profile-avatar-section">
+    <label class="avatar-upload-wrap">
+      <img id="profile-avatar" class="avatar avatar-xl" src="" alt="Your avatar" />
+      <div class="overlay">CHANGE<br/>PHOTO</div>
+      <input type="file" id="avatar-input" accept="image/*" hidden />
+    </label>
+  </div>
+
+  <div class="profile-field">
+    <label>Your Name</label>
+    <div class="value-row">
+      <input type="text" id="displayName-input" disabled />
+      <button class="btn-icon edit-toggle" data-field="displayName">✎</button>
+    </div>
+    <p class="hint">This is not your username or pin. This name will be visible to your contacts.</p>
+  </div>
+
+  <div class="profile-field">
+    <label>Username</label>
+    <div class="value-row">
+      <input type="text" id="username-input" disabled />
+      <button class="btn-icon edit-toggle" data-field="username">✎</button>
+    </div>
+    <p class="hint">People can find you by this unique username.</p>
+  </div>
+
+  <div class="profile-field">
+    <label>About</label>
+    <div class="value-row">
+      <textarea id="about-input" disabled rows="2"></textarea>
+      <button class="btn-icon edit-toggle" data-field="about">✎</button>
+    </div>
+  </div>
+
+  <div class="profile-field">
+    <label>Email</label>
+    <div class="value-row">
+      <input type="text" id="email-display" disabled />
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+<script type="module">
+  import { requireAuth } from "./js/auth.js";
+  import { getUserProfile, updateProfileText, updateUsername, changeProfilePicture } from "./js/profile.js";
+  import { showToast, setLoading } from "./js/utilities.js";
+
+  const user = await requireAuth();
+  let profile = await getUserProfile(user.uid);
+
+  const avatarEl = document.getElementById("profile-avatar");
+  const nameInput = document.getElementById("displayName-input");
+  const usernameInput = document.getElementById("username-input");
+  const aboutInput = document.getElementById("about-input");
+  const emailDisplay = document.getElementById("email-display");
+
+  function render() {
+    avatarEl.src = profile.photoURL;
+    nameInput.value = profile.displayName || "";
+    usernameInput.value = profile.username || "";
+    aboutInput.value = profile.about || "";
+    emailDisplay.value = profile.email || "";
+  }
+  render();
+
+  document.getElementById("back-btn").addEventListener("click", () => (window.location.href = "chat.html"));
+
+  document.getElementById("avatar-input").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLoading(true, "Uploading photo...");
+    try {
+      const url = await changeProfilePicture(user.uid, file);
+      profile.photoURL = url;
+      render();
+      showToast("Profile photo updated.");
+    } catch (err) {
+      showToast(err.message);
+    } finally {
+      setLoading(false);
+    }
+  });
+  document.querySelector(".avatar-upload-wrap").addEventListener("click", (e) => {
+    if (e.target.tagName !== "INPUT") document.getElementById("avatar-input").click();
+  });
+
+  document.querySelectorAll(".edit-toggle").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const field = btn.dataset.field;
+      const inputMap = { displayName: nameInput, username: usernameInput, about: aboutInput };
+      const input = inputMap[field];
+      const isEditing = !input.disabled;
+
+      if (isEditing) {
+        // Save
+        setLoading(true, "Saving...");
+        try {
+          if (field === "displayName") {
+            await updateProfileText(user.uid, { displayName: input.value });
+            profile.displayName = input.value.trim();
+          } else if (field === "about") {
+            await updateProfileText(user.uid, { about: input.value });
+            profile.about = input.value.trim();
+          } else if (field === "username") {
+            await updateUsername(user.uid, profile.username, input.value);
+            profile.username = input.value.trim().toLowerCase();
+          }
+          showToast("Saved.");
+        } catch (err) {
+          showToast(err.message);
+          render();
+        } finally {
+          setLoading(false);
+        }
+        input.disabled = true;
+        btn.textContent = "✎";
+      } else {
+        input.disabled = false;
+        input.focus();
+        btn.textContent = "✓";
+      }
+    });
+  });
+</script>
+</body>
+</html>
