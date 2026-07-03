@@ -47,7 +47,7 @@ export async function registerUser({ email, password, displayName, username }) {
     displayName: displayName.trim(),
     username: usernameKey,
     photoURL,
-    about: "Hey there! I am using ChatApp.",
+    about: "Hey there! I am using Drexy.",
     isOnline: true,
     lastSeen: SERVER_TIMESTAMP,
     createdAt: SERVER_TIMESTAMP,

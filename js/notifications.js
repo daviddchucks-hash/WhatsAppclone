@@ -49,8 +49,8 @@ export function notifyNewMessage({ senderName, senderPhoto, text, isTabFocused, 
   setTimeout(() => notification.close(), 6000);
 }
 
-/** Update the document title with a total unread count badge, e.g. "(3) ChatApp". */
-export function updateTitleBadge(totalUnread, baseTitle = "ChatApp") {
+/** Update the document title with a total unread count badge, e.g. "(3) Drexy". */
+export function updateTitleBadge(totalUnread, baseTitle = "Drexy") {
   document.title = totalUnread > 0 ? `(${totalUnread}) ${baseTitle}` : baseTitle;
 }
 

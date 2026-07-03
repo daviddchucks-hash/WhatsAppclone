@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Log In · ChatApp</title>
+<title>Log In · Drexy</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="css/auth.css" />
@@ -11,34 +11,59 @@
 </head>
 <body class="auth-page">
 
-<div class="auth-card fade-in">
-  <div class="auth-brand">
-    <div class="logo-circle">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.42 1.09 4.6 2.86 6.19L4 22l5.11-1.34C10.02 20.88 11 21 12 21c5.52 0 10-4.03 10-9S17.52 2 12 2z" fill="#fff"/></svg>
-    </div>
-    <h1>ChatApp</h1>
-  </div>
-  <p class="subtitle">Log in to continue messaging</p>
+<div class="auth-orb"></div>
 
-  <form id="login-form" novalidate>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <div class="password-input-wrap">
-        <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
-        <button type="button" class="password-toggle" data-target="password">Show</button>
+<div class="auth-layout fade-in">
+
+  <!-- Left: Brand panel -->
+  <div class="auth-brand-panel">
+    <div class="brand-top">
+      <div class="brand-logo">
+        <div class="brand-logo-icon">D</div>
+        <span class="brand-logo-name">Drexy</span>
       </div>
+      <h2 class="brand-headline">Connect<br /><span>Boldly.</span></h2>
+      <p class="brand-sub">
+        Instant messaging, group chats, voice notes and media sharing — all in one beautifully dark space.
+      </p>
     </div>
-    <a href="#" id="forgot-password-link" class="forgot-link">Forgot password?</a>
-    <div class="form-error" id="login-error"></div>
-    <button type="submit" class="btn btn-primary btn-block">Log In</button>
-  </form>
+    <div class="brand-features">
+      <div class="brand-feature"><div class="feature-dot"></div>End-to-end encrypted messages</div>
+      <div class="brand-feature"><div class="feature-dot"></div>Group chats with roles & controls</div>
+      <div class="brand-feature"><div class="feature-dot"></div>Voice notes & media sharing</div>
+      <div class="brand-feature"><div class="feature-dot"></div>Real-time online presence</div>
+    </div>
+  </div>
 
-  <div class="auth-footer-link">
-    Don't have an account? <a href="register.html">Sign up</a>
+  <!-- Right: Form panel -->
+  <div class="auth-form-panel">
+    <h1 class="auth-form-title">Welcome back</h1>
+    <p class="auth-form-subtitle">Sign in to your Drexy account to continue.</p>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email"
+               placeholder="you@example.com" required autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input-wrap">
+          <input type="password" id="password" name="password"
+                 placeholder="Enter your password" required autocomplete="current-password" />
+          <button type="button" class="password-toggle" data-target="password">Show</button>
+        </div>
+      </div>
+
+      <a href="#" id="forgot-password-link" class="forgot-link">Forgot password?</a>
+      <div class="form-error" id="login-error"></div>
+      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </form>
+
+    <div class="auth-footer-link">
+      Don't have an account? <a href="register.html">Create one free</a>
+    </div>
   </div>
 </div>
 
@@ -50,11 +75,11 @@
       <button class="btn-icon" id="close-reset-modal">✕</button>
     </div>
     <div class="modal-body">
-      <p style="color: var(--clr-text-muted); font-size: 14px; margin-bottom: 16px;">
-        Enter your email address and we'll send you a link to reset your password.
+      <p style="color:var(--clr-text-muted);font-size:13.5px;margin-bottom:18px;line-height:1.6">
+        Enter your email and we'll send you a link to reset your password.
       </p>
       <div class="form-group">
-        <label for="reset-email">Email</label>
+        <label for="reset-email">Email address</label>
         <input type="email" id="reset-email" placeholder="you@example.com" />
       </div>
     </div>
@@ -64,6 +89,9 @@
     </div>
   </div>
 </div>
+
+<div id="toast"></div>
+<div id="loading-overlay"><div class="spinner"></div><span>Signing in…</span></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -77,12 +105,12 @@
 
   await redirectIfAuthenticated();
 
-  const form = document.getElementById("login-form");
-  const errorEl = document.getElementById("login-error");
+  const form     = document.getElementById("login-form");
+  const errorEl  = document.getElementById("login-error");
 
   bindAuthForm(form, async () => {
     errorEl.classList.remove("visible");
-    const email = document.getElementById("email").value.trim();
+    const email    = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     try {
       await loginUser(email, password);
@@ -94,13 +122,13 @@
     }
   });
 
-  // Show/hide password
+  // Password toggle
   document.querySelectorAll(".password-toggle").forEach((btn) => {
     btn.addEventListener("click", () => {
       const input = document.getElementById(btn.dataset.target);
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      btn.textContent = isPassword ? "Hide" : "Show";
+      const show  = input.type === "password";
+      input.type  = show ? "text" : "password";
+      btn.textContent = show ? "Hide" : "Show";
     });
   });
 
@@ -111,13 +139,13 @@
     document.getElementById("reset-email").value = document.getElementById("email").value;
     resetModal.classList.add("open");
   });
-  document.getElementById("close-reset-modal").addEventListener("click", () => resetModal.classList.remove("open"));
-  document.getElementById("cancel-reset").addEventListener("click", () => resetModal.classList.remove("open"));
+  document.getElementById("close-reset-modal").addEventListener("click",  () => resetModal.classList.remove("open"));
+  document.getElementById("cancel-reset").addEventListener("click",        () => resetModal.classList.remove("open"));
   document.getElementById("send-reset").addEventListener("click", async () => {
     const email = document.getElementById("reset-email").value.trim();
     try {
       await resetPassword(email);
-      showToast("Password reset email sent! Check your inbox.");
+      showToast("✅ Reset email sent! Check your inbox.");
       resetModal.classList.remove("open");
     } catch (err) {
       showToast(friendlyAuthError(err));

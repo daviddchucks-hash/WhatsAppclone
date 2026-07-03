@@ -1,15 +1,22 @@
 /* ==========================================================================
-   responsive.css — Mobile-first breakpoints for the chat app shell.
+   responsive.css — Drexy Mobile Breakpoints
    ========================================================================== */
 
-@media (max-width: 900px) {
+/* ─── Tablet / narrow desktop ─────────────────────────────────────────────── */
+@media (max-width: 960px) {
   .info-panel {
     width: 100%;
-    min-width: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 30;
   }
 }
 
+/* ─── Mobile ──────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* App shell: overlap sidebar over chat, both full-width */
   .app-shell {
     position: relative;
     overflow: hidden;
@@ -22,7 +29,7 @@
     position: absolute;
     inset: 0;
     z-index: 10;
-    transition: transform var(--transition);
+    transition: transform var(--transition-slow);
   }
 
   .chat-window {
@@ -31,59 +38,77 @@
     width: 100%;
     z-index: 5;
     transform: translateX(100%);
-    transition: transform var(--transition);
+    transition: transform var(--transition-slow);
+    background: var(--clr-bg);
   }
 
+  /* When a chat is open: slide sidebar away, bring chat window forward */
   .app-shell.chat-active .sidebar {
     transform: translateX(-100%);
   }
-
   .app-shell.chat-active .chat-window {
     transform: translateX(0);
     z-index: 15;
-  }
-
-  .back-btn {
-    display: inline-flex;
-  }
-
-  .mobile-only {
     display: flex;
   }
 
-  .message-row {
-    max-width: 85%;
-  }
-
-  .messages-container {
-    padding: 16px 4%;
-  }
-
-  .emoji-picker {
-    width: 260px;
-    right: -10px;
-  }
-
-  .auth-card {
-    padding: 32px 22px;
-  }
-
+  /* Info panel is always positioned over chat on mobile */
   .info-panel {
     z-index: 40;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border-left: none;
   }
-}
 
-@media (max-width: 480px) {
+  /* Back button shows on mobile */
+  .back-btn { display: inline-flex; }
+
+  /* Mobile-only elements */
+  .mobile-only { display: flex; }
+
+  /* Messages */
+  .message-row { max-width: 88%; }
+  .messages-container { padding: 16px 3%; }
+
+  /* Emoji picker narrower */
+  .emoji-picker { width: 240px; right: -20px; }
+  .attach-options { min-width: 160px; }
+
+  /* Auth pages */
+  .auth-form-panel { padding: 36px 24px; }
+  .auth-card { padding: 32px 22px; }
+
+  /* Profile page: full width */
+  .profile-page { max-width: 100%; }
+
+  /* Media bubbles */
   .bubble .media-image,
   .bubble .media-video {
     max-width: 220px;
   }
+}
 
-  .attach-options {
-    min-width: 160px;
+/* ─── Very small screens ──────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --header-height: 58px;
   }
 
-  .auth-brand h1 {
-    font-size: 19px;
+  .auth-brand h1 { font-size: 20px; }
+  .auth-form-panel .auth-form-title { font-size: 22px; }
+
+  .bubble .media-image,
+  .bubble .media-video { max-width: 185px; }
+
+  .modal { max-width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .slide-up { animation: slideUpMobile .28s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
   }
+
+  .emoji-picker { width: 220px; }
+  .search-bar .search-input-wrap { padding: 8px 12px; }
 }

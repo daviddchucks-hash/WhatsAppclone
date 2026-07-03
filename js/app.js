@@ -68,7 +68,7 @@ import {
 
 // -------------------------------- Theme init --------------------------------
 (function initTheme() {
-  const saved = localStorage.getItem("theme") || "system";
+  const saved = localStorage.getItem("drexy-theme") || "system";
   const theme =
     saved === "system"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
