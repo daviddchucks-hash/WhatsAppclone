@@ -21,7 +21,7 @@
     },
 
     "usernames": {
-      ".read": "auth != null",
+      ".read": true,
       "$username": {
         ".write": "auth != null && (!data.exists() || data.val() === auth.uid) && (newData.val() === auth.uid || newData.val() === null)"
       }
