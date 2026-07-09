@@ -13,18 +13,17 @@
 // "vanilla JS only, no backend framework" requirement.
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCuAIyM54XWy4DaYqoFYoEIUP0mQNaZQY4",
-  authDomain: "church-app-637f7.firebaseapp.com",
-  // IMPORTANT: Once you create a Realtime Database in the Firebase console
-  // it will give you a URL that looks like the line below. Replace it with
-  // your actual databaseURL (Firebase usually auto-fills this correctly,
-  // but double check it matches your project + region).
-  databaseURL: "https://church-app-637f7-default-rtdb.firebaseio.com",
-  projectId: "church-app-637f7",
-  storageBucket: "church-app-637f7.firebasestorage.app",
-  messagingSenderId: "534721516086",
-  appId: "1:534721516086:web:1dd27eae690c620098be97",
-  measurementId: "G-JJL8SP6LNW"
+  apiKey: "AIzaSyCUrF2w6l0xPUogGw2kfDvnCc0VZya8nYs",
+  authDomain: "drexy-7e070.firebaseapp.com",
+  // Standard Realtime Database URL for project drexy-7e070 (us-central1).
+  // If you chose a different region when creating the database, update this
+  // URL to match what the Firebase console shows under Realtime Database.
+  databaseURL: "https://drexy-7e070-default-rtdb.firebaseio.com",
+  projectId: "drexy-7e070",
+  storageBucket: "drexy-7e070.firebasestorage.app",
+  messagingSenderId: "624749772550",
+  appId: "1:624749772550:web:fcc22a4c4f2b76e3572887",
+  measurementId: "G-GE23KRC0GS"
 };
 
 // Initialize the Firebase app (guard against double-initialization if this
