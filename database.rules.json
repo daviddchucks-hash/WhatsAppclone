@@ -64,7 +64,7 @@
 
     "chats": {
       "$chatId": {
-        ".read": "auth != null && data.child('members').child(auth.uid).exists()",
+        ".read": "auth != null && (!data.exists() || data.child('members').child(auth.uid).exists())",
         ".write": "auth != null && (!data.exists() || data.child('members').child(auth.uid).exists())"
       }
     },

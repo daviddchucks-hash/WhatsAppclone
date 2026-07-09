@@ -48,9 +48,9 @@ try {
 }
 
 // Core service handles used throughout the app.
+// Note: Firebase Storage has been replaced with Cloudinary (see js/storage.js).
 export const auth = firebase.auth();
 export const db = firebase.database();
-export const storage = firebase.storage();
 
 // Handy re-export of the special server-timestamp placeholder used when
 // writing dates into Realtime Database (keeps clocks consistent across
