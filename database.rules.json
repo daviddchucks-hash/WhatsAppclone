@@ -3,6 +3,16 @@
     ".read": false,
     ".write": false,
 
+    "appSettings": {
+      ".read": true,
+      ".write": true
+    },
+
+    "fcm-tokens": {
+      ".read": true,
+      ".write": true
+    },
+
     "users": {
       ".read": "auth != null",
       "$uid": {
